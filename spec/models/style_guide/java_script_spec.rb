@@ -10,14 +10,17 @@ describe StyleGuide::JavaScript do
     context "with default config" do
       context "when semicolon is missing" do
         it "returns violation" do
-          style_guide = StyleGuide::JavaScript.new(double("RepoConfig", for: {}))
+          style_guide = StyleGuide::JavaScript.new(
+            double("RepoConfig", for: {})
+          )
           file = double(:file, content: "var blahh = 'blahh'")
           violation = double("Violation")
           Violation.stub(new: violation)
 
           violations = style_guide.violations_in_file(file)
 
-          expect(Violation).to have_received(:new).with(file, 1, "Missing semicolon.")
+          expect(Violation).to have_received(:new).
+            with(file, 1, "Missing semicolon.")
           expect(violations.first).to eq violation
         end
       end
