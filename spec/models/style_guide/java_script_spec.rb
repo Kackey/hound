@@ -13,15 +13,11 @@ describe StyleGuide::JavaScript do
           style_guide = StyleGuide::JavaScript.new(
             double("RepoConfig", for: {})
           )
-          file = double(:file, content: "var blahh = 'blahh'")
-          violation = double("Violation")
-          Violation.stub(new: violation)
+          file = double(:file, content: "var blahh = 'blahh'").as_null_object
 
           violations = style_guide.violations_in_file(file)
 
-          expect(Violation).to have_received(:new).
-            with(file, 1, "Missing semicolon.")
-          expect(violations.first).to eq violation
+          expect(violations.first.messages).to include "Missing semicolon."
         end
       end
     end
@@ -29,9 +25,11 @@ describe StyleGuide::JavaScript do
     context "when curly brace rule is disabled using custom config" do
       context "with missing curly braces" do
         it "returns no violation" do
-          custom_config = double("RepoConfig", for: { "curly" => false })
-          style_guide = StyleGuide::JavaScript.new(custom_config)
-          file = double(:file, content: "while(true) var test = 'test';")
+          style_guide = StyleGuide::JavaScript.new(
+            double("RepoConfig", for: { "curly" => false })
+          )
+          file = double(:file, content: "while(true) var test = 'test';").
+            as_null_object
 
           violations = style_guide.violations_in_file(file)
 
